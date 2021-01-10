@@ -15,6 +15,9 @@ class AlienInvasion:
     def run_game(self):
         while True:
             self._check_events()
+            # Update objects.
+            self.ship.update()
+            self._update_screen()
 
     def _check_events(self):
         """Respond to keypress and mouse input"""
@@ -22,6 +25,17 @@ class AlienInvasion:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # Handle player keypress.
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.right = True
+                elif event.key == pygame.K_LEFT:
+                    self.ship.left = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.right = False
+                elif event.key == pygame.K_LEFT:
+                    self.ship.left = False
 
     def _update_screen(self):
         """Redraw the screen during each pass"""
@@ -32,6 +46,5 @@ class AlienInvasion:
 
 
 if __name__ == '__main__':
-
     ai = AlienInvasion()
     ai.run_game()
