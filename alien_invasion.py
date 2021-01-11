@@ -27,15 +27,24 @@ class AlienInvasion:
                 sys.exit()
             # Handle player keypress.
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.right = True
-                elif event.key == pygame.K_LEFT:
-                    self.ship.left = True
+                self._keydown_events(event)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.right = False
-                elif event.key == pygame.K_LEFT:
-                    self.ship.left = False
+                self._keyup_events(event)
+
+    def _keydown_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.ship.right = True
+        elif event.key == pygame.K_LEFT:
+            self.ship.left = True
+        elif event.key == pygame.K_q:
+            pygame.quit()
+            sys.exit()
+
+    def _keyup_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.ship.right = False
+        elif event.key == pygame.K_LEFT:
+            self.ship.left = False
 
     def _update_screen(self):
         """Redraw the screen during each pass"""
