@@ -21,7 +21,7 @@ class AlienInvasion:
             self._check_events()
             # Update objects(position,values,etc).
             self.ship.update()
-            self.bullets.update()
+            self._update_bullets()
             # Draw on screen.
             self._update_screen()
 
@@ -55,17 +55,24 @@ class AlienInvasion:
             self.ship.left = False
 
     def _fire_bullet(self):
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        """Create a new bullet and add it to bullets group"""
+        if len(self.bullets) < self.settings.bul_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """Update position of bullets and remove old ones"""
+        self.bullets.update()
+        for bullet in self.bullets.sprites():
+            # rid of bullets that are out of screen
+            if bullet.rect.bottom < 0:
+                bullet.remove(self.bullets)
 
     def _update_screen(self):
         """Redraw the screen during each pass"""
         self.screen.fill(self.settings.bg_color)
         for bullet in self.bullets.sprites():
-            if bullet.rect.bottom < 0:
-                bullet.remove(self.bullets)
-            else:
-                bullet.draw()
+            bullet.draw()
         self.ship.blitme()
         pygame.display.flip()
 
