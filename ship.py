@@ -11,7 +11,6 @@ class Ship:
         self.screen_rect = self.screen.get_rect()
         # Load ship rect.
         self.img = pygame.image.load('images/ship.bmp').convert()
-        self.img.set_colorkey((230, 230, 230))
         self.rect = self.img.get_rect()
         self.rect.midbottom = self.screen_rect.midbottom
         # Control ships` position.
