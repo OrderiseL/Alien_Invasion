@@ -73,18 +73,30 @@ class AlienInvasion:
 
     def _create_fleet(self):
         """Create the fleet of Aliens"""
-        # We'll create a new alien, figure out how many aliens
+        # We'll create a new alien to figure out how many aliens
         # can fit in a row.
         new_alien = Alien(self)
-        a_width = new_alien.rect.width
-        available_space = self.settings.scr_width - (2 * a_width)
-        amount_in_row = available_space // (2 * a_width)
+        a_width, a_height = new_alien.rect.size
+        available_space_x = self.settings.scr_width - (2 * a_width)
+        amount_in_row = available_space_x // (2 * a_width)
+        # Calculate amount of rows.
+        available_space_y = (self.settings.scr_height -
+                             self.ship.rect.height - 3 * a_height)
+        amount_of_rows = available_space_y // (3 * a_height)
         # Add aliens to fleet.
-        for al_number in range(0, amount_in_row):
-            new_alien = Alien(self)
-            new_alien.x = new_alien.x + 2 * a_width * al_number
-            new_alien.rect.x = new_alien.x
-            self.aliens.add(new_alien)
+        for row in range(amount_of_rows):
+            for al_number in range(amount_in_row):
+                self._create_alien(al_number, row)
+
+    def _create_alien(self, alien_number, row_num):
+        new_alien = Alien(self)
+        a_width, a_height = new_alien.rect.size
+        # Aliens' X position.
+        new_alien.x = new_alien.x + 2 * a_width * alien_number
+        new_alien.rect.x = new_alien.x
+        # Aliens' Y position.
+        new_alien.rect.y = new_alien.rect.y + 2 * a_height * row_num
+        self.aliens.add(new_alien)
 
     def _update_screen(self):
         """Redraw the screen during each pass"""
