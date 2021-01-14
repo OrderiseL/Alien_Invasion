@@ -24,6 +24,7 @@ class AlienInvasion:
             self._check_events()
             # Update objects(position,values,etc).
             self.ship.update()
+            self._update_fleet()
             self._update_bullets()
             # Draw on screen.
             self._update_screen()
@@ -70,6 +71,20 @@ class AlienInvasion:
             # rid of bullets that are out of screen
             if bullet.rect.bottom < 0:
                 bullet.remove(self.bullets)
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+        """Check for collisions between aliens and bullets"""
+        # Check for bullets that collided with aliens.
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        if not self.aliens:
+            self.settings.alien_speed *= 1.30
+            self.bullets.empty()
+            self._create_fleet()
+
+    def _update_fleet(self):
+        self._check_fleet_edges()
+        self.aliens.update()
 
     def _create_fleet(self):
         """Create the fleet of Aliens"""
@@ -78,11 +93,11 @@ class AlienInvasion:
         new_alien = Alien(self)
         a_width, a_height = new_alien.rect.size
         available_space_x = self.settings.scr_width - (2 * a_width)
-        amount_in_row = available_space_x // (2 * a_width)
+        amount_in_row = available_space_x // (2 * a_width) - 2
         # Calculate amount of rows.
         available_space_y = (self.settings.scr_height -
                              self.ship.rect.height - 3 * a_height)
-        amount_of_rows = available_space_y // (3 * a_height)
+        amount_of_rows = available_space_y // (3 * a_height)+1
         # Add aliens to fleet.
         for row in range(amount_of_rows):
             for al_number in range(amount_in_row):
@@ -97,6 +112,18 @@ class AlienInvasion:
         # Aliens' Y position.
         new_alien.rect.y = new_alien.rect.y + 2 * a_height * row_num
         self.aliens.add(new_alien)
+
+    def _check_fleet_edges(self):
+        for alien in self.aliens.sprites():
+            if (alien.rect.right > self.settings.scr_width
+                    or alien.rect.left < 0):
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        self.settings.fleet_direction *= -1
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
 
     def _update_screen(self):
         """Redraw the screen during each pass"""

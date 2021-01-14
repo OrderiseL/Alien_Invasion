@@ -15,4 +15,8 @@ class Settings:
         self.bul_speed = 1.0
         self.bul_width = 5
         self.bul_height = 15
-        self.bul_allowed = 3
+        self.bul_allowed = 2
+        # Alien settings.
+        self.alien_speed = 0.25
+        self.fleet_drop_speed = 10
+        self.fleet_direction = 1  # 1=RIGHT -1=LEFT.
