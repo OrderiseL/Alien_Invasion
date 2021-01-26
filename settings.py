@@ -26,8 +26,10 @@ class Settings:
         self.alien_speed = 0.5
         self.bul_speed = 1.0
         self.ship_speed = 1.0
+        self.alien_points = 10
 
     def increase_speed(self):
         self.alien_speed *= self.speedup_factor
         self.bul_speed *= self.speedup_factor
         self.ship_speed *= self.speedup_factor
+        self.alien_points *= 1.2

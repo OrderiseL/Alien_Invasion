@@ -7,6 +7,7 @@ class GameStats:
         self.ships_left = 0
         self.reset_stats()
         self.speed_increase = 1.2
+        self.highscore = 0
         self.game_active = False
 
     def reset_stats(self):
