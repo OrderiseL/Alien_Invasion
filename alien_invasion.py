@@ -7,7 +7,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
-from scoreboard import Scoreboard
+from databoard import Databoard
 
 
 class AlienInvasion:
@@ -25,7 +25,7 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
         self.play_button = Button(self, "Play")
-        self.sb = Scoreboard(self)
+        self.sb = Databoard(self)
 
     def run_game(self):
         """Start the main loop for the game"""
@@ -44,7 +44,11 @@ class AlienInvasion:
         # Reset statistics.
         self.game_stats.reset_stats()
         self.game_stats.game_active = True
-        self.sb.show_score()
+        self.sb.prep_level()
+        self.sb.prep_ships()
+        self.sb.prep_score()
+        self.sb.prep_highscore()
+        self.sb.show_datas()
 
     def _check_events(self):
         """Respond to keypress and mouse input"""
@@ -63,7 +67,8 @@ class AlienInvasion:
 
     def _check_button(self, mouse_pos):
         # Check if play button is pressed
-        if self.play_button.rect.collidepoint(mouse_pos) and not self.game_stats.game_active:
+        if self.play_button.rect.collidepoint(mouse_pos) and\
+                not self.game_stats.game_active:
             pygame.mouse.set_visible(False)
             self._start_game()
 
@@ -79,6 +84,11 @@ class AlienInvasion:
             self._fire_bullet()
         if event.key == pygame.K_p:
             self._start_game()
+        # TESTING
+        if event.key == pygame.K_b:
+            self.settings.bul_width = 100
+        if event.key == pygame.K_a:
+            self.settings.alien_speed = 100
 
     def _keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
@@ -117,6 +127,8 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+            self.game_stats.level += 1
+            self.sb.prep_level()
 
     def _update_fleet(self):
         self._check_fleet_edges()
@@ -124,8 +136,8 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """Lower lives and reset screen"""
+        self.game_stats.ships_left -= 1
         if self.game_stats.ships_left > 0:
-            self.game_stats.ships_left -= 1
             self._reset_objects()
         else:
             self.game_stats.game_active = False
@@ -186,7 +198,7 @@ class AlienInvasion:
             bullet.draw()
         self.ship.blitme()
         self.aliens.draw(self.screen)
-        self.sb.show_score()
+        self.sb.show_datas()
         # Game paused.
         if not self.game_stats.game_active:
             self.play_button.draw_button()
@@ -207,6 +219,9 @@ class AlienInvasion:
         self.ship.x = float(self.ship.rect.x)
         self._create_fleet()
         # Reset dynamic settings.
+        self.game_stats.level = 1
+        self.sb.prep_ships()
+        self.sb.prep_level()
         self.settings.init_dynamic_settings()
 
 
